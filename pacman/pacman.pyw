@@ -155,7 +155,7 @@ class game():
     def __init__(self):
         self.levelNum = 0
         self.score = 0
-        self.lives = 3
+        self.lives = 15
 
         # game "mode" variable
         # 1 = normal
@@ -195,7 +195,7 @@ class game():
     def StartNewGame(self):
         self.levelNum = 1
         self.score = 0
-        self.lives = 3
+        self.lives = 15
 
         self.SetMode(4)
         thisLevel.LoadLevel(thisGame.GetLevelNum())
@@ -884,20 +884,21 @@ class pacman():
                         thisGame.SetMode(5)
 
                     # check for collisions with fruit
-                    if thisFruit.active == True:
-                        if thisLevel.CheckIfHit(self.x, self.y, thisFruit.x, thisFruit.y, 8):
-                            thisGame.AddToScore(2500)
-                            thisFruit.active = False
-                            thisGame.fruitTimer = 0
-                            thisGame.fruitScoreTimer = 120
-                            thisGame.ghostValue = 200
-                            for i in range(0, 4, 1):
-                                ghosts[i].state = 3
-                                ghosts[i].speed = ghosts[i].speed * 4
-                                ghosts[i].x = ghosts[i].nearestCol * 16
-                                ghosts[i].y = ghosts[i].nearestRow * 16
-                                ghosts[i].currentPath = path.FindPath((ghosts[i].nearestRow, ghosts[i].nearestCol),(thisLevel.GetGhostBoxPos()[0] + 1, thisLevel.GetGhostBoxPos()[1]))
-                                ghosts[i].FollowNextPathWay()
+            if thisFruit.active == True:
+                if thisLevel.CheckIfHit(self.x, self.y, thisFruit.x, thisFruit.y, 8):
+                    thisGame.AddToScore(2500)
+                    thisFruit.active = False
+                    thisGame.fruitTimer = 0
+                    thisGame.fruitScoreTimer = 120
+                    thisGame.ghostValue = 200
+                    for i in range(0, 4, 1):
+                        ghosts[i].state = 3
+                        ghosts[i].speed = ghosts[i].speed * 4
+                        ghosts[i].x = ghosts[i].nearestCol * 16
+                        ghosts[i].y = ghosts[i].nearestRow * 16
+                        ghosts[i].currentPath = path.FindPath((ghosts[i].nearestRow, ghosts[i].nearestCol), (thisLevel.GetGhostBoxPos()[0] + 1, thisLevel.GetGhostBoxPos()[1]))
+                        ghosts[i].FollowNextPathWay()
+                        thisFruit.active = False
 
 
 
