@@ -1,6 +1,8 @@
 __all__ = ['main']
 
 import os
+import sys
+
 import pygame
 import pygame_menu
 from pygame_menu.examples import create_example_window
@@ -80,7 +82,10 @@ def main_background() -> None:
 
 
 def game():
-    os.system("C:/Users/eserd/github/G4_PyMan/pacman/pacman.pyw")
+    os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/pacman/pacman.pyw")
+    pygame.quit()
+    sys.exit(0)
+    pygame.display.update()
 
 
 def main(test: bool = False) -> None:

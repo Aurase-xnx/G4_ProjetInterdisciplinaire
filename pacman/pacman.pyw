@@ -1364,14 +1364,14 @@ def CheckIfCloseButton(events):
 def pause():
     paused = 1
     while (paused == 1):
-        txtpause()
+        pygame.display.set_caption('PAUSE, R pour reprendre')
         pygame.event.wait()
         if (pygame.key.get_pressed()[pygame.K_r]):
+            pygame.display.set_caption('PyMan, P pour mettre en pause')
             paused = 0
-
-
-def txtpause():
-    print("Pause")
+        if (pygame.key.get_pressed()[pygame.K_ESCAPE]):
+            os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/launcher.py")
+            sys.exit()
 
 
 def CheckInputs():
@@ -1400,6 +1400,8 @@ def CheckInputs():
             pause()
 
     if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+        os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/launcher.py")
+        pygame.quit()
         sys.exit(0)
 
     elif thisGame.mode == 3:
