@@ -12,6 +12,7 @@
 # -   should be examined if this doesn't run in Windows
 # - Added joystick support (configure by changing JS_* constants)
 # - Added a high-score list. Depends on wx for querying the user's name
+import pickle
 
 import pygame, sys, os, random
 from pygame.locals import *
@@ -57,12 +58,12 @@ snd_eatfruit = pygame.mixer.Sound(os.path.join(SCRIPT_PATH, "res", "sounds", "ea
 snd_extralife = pygame.mixer.Sound(os.path.join(SCRIPT_PATH, "res", "sounds", "extralife.wav"))
 
 ghostcolor = {}
-ghostcolor[0] = (255, 0, 0, 255)
-ghostcolor[1] = (255, 128, 255, 255)
-ghostcolor[2] = (128, 255, 255, 255)
-ghostcolor[3] = (255, 128, 0, 255)
-ghostcolor[4] = (50, 50, 255, 255)  # blue, vulnerable ghost
-ghostcolor[5] = (255, 255, 255, 255)  # white, flashing ghost
+ghostcolor[0] = (170, 29, 30, 255)
+ghostcolor[1] = (255, 255, 255, 255)
+ghostcolor[2] = (222, 34, 38, 255)
+ghostcolor[3] = (56, 56, 56, 255)
+ghostcolor[4] = (50, 50, 255, 255) # blue, vulnerable ghost
+ghostcolor[5] = (255, 255, 255, 255) # white, flashing ghost
 
 
 #      ___________________
@@ -251,7 +252,7 @@ class game():
     def MoveScreen(self, newX, newY):
         self.screenPixelPos = (newX, newY)
         self.screenNearestTilePos = (
-        int(newY / 16), int(newX / 16))  # nearest-tile position of the screen from the UL corner
+            int(newY / 16), int(newX / 16))  # nearest-tile position of the screen from the UL corner
         self.screenPixelOffset = (newX - self.screenNearestTilePos[1] * 16, newY - self.screenNearestTilePos[0] * 16)
 
     def GetScreenPos(self):
@@ -687,7 +688,7 @@ class ghost():
                     (randRow, randCol) = (0, 0)
 
                     while not thisLevel.GetMapTile(randRow, randCol) == tileID['pellet'] or (randRow, randCol) == (
-                    0, 0):
+                            0, 0):
                         randRow = random.randint(1, thisLevel.lvlHeight - 2)
                         randCol = random.randint(1, thisLevel.lvlWidth - 2)
 
@@ -878,20 +879,29 @@ class pacman():
                         ghosts[i].x = ghosts[i].nearestCol * 16
                         ghosts[i].y = ghosts[i].nearestRow * 16
                         ghosts[i].currentPath = path.FindPath((ghosts[i].nearestRow, ghosts[i].nearestCol), (
-                        thisLevel.GetGhostBoxPos()[0] + 1, thisLevel.GetGhostBoxPos()[1]))
+                            thisLevel.GetGhostBoxPos()[0] + 1, thisLevel.GetGhostBoxPos()[1]))
                         ghosts[i].FollowNextPathWay()
 
                         # set game mode to brief pause after eating
                         thisGame.SetMode(5)
 
-            # check for collisions with the fruit
-            if thisFruit.active == True:
-                if thisLevel.CheckIfHit(self.x, self.y, thisFruit.x, thisFruit.y, 8):
-                    thisGame.AddToScore(2500)
-                    thisFruit.active = False
-                    thisGame.fruitTimer = 0
-                    thisGame.fruitScoreTimer = 120
-                    snd_eatfruit.play()
+                    # check for collisions with fruit
+                    if thisFruit.active == True:
+                        if thisLevel.CheckIfHit(self.x, self.y, thisFruit.x, thisFruit.y, 8):
+                            thisGame.AddToScore(2500)
+                            thisFruit.active = False
+                            thisGame.fruitTimer = 0
+                            thisGame.fruitScoreTimer = 120
+                            thisGame.ghostValue = 200
+                            for i in range(0, 4, 1):
+                                ghosts[i].state = 3
+                                ghosts[i].speed = ghosts[i].speed * 4
+                                ghosts[i].x = ghosts[i].nearestCol * 16
+                                ghosts[i].y = ghosts[i].nearestRow * 16
+                                ghosts[i].currentPath = path.FindPath((ghosts[i].nearestRow, ghosts[i].nearestCol),(thisLevel.GetGhostBoxPos()[0] + 1, thisLevel.GetGhostBoxPos()[1]))
+                                ghosts[i].FollowNextPathWay()
+
+
 
         else:
             # we're going to hit a wall -- stop moving
@@ -1164,19 +1174,19 @@ class level():
                     if useTile == tileID['pellet-power']:
                         if self.powerPelletBlinkTimer < 30:
                             screen.blit(tileIDImage[useTile], (
-                            col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                                col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
 
                     elif useTile == tileID['showlogo']:
                         screen.blit(thisGame.imLogo, (
-                        col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                            col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
 
                     elif useTile == tileID['hiscores']:
                         screen.blit(thisGame.imHiscores, (
-                        col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                            col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
 
                     else:
                         screen.blit(tileIDImage[useTile], (
-                        col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
+                            col * 16 - thisGame.screenPixelOffset[0], row * 16 - thisGame.screenPixelOffset[1]))
 
     def LoadLevel(self, levelNum):
 
@@ -1370,6 +1380,8 @@ def pause():
             pygame.display.set_caption('PyMan, P pour mettre en pause')
             paused = 0
         if (pygame.key.get_pressed()[pygame.K_ESCAPE]):
+            with open("savegame","wb") as f:
+                pickle.dump(game, level, ghost, pacman, fruit, f)
             os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/launcher.py")
             sys.exit()
 

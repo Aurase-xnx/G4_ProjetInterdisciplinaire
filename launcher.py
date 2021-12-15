@@ -83,9 +83,11 @@ def main_background() -> None:
 
 def game():
     os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/pacman/pacman.pyw")
-    pygame.quit()
-    sys.exit(0)
-    pygame.display.update()
+    with open("savegame", "rb") as f:
+
+        pygame.quit()
+        sys.exit(0)
+        pygame.display.update()
 
 
 def main(test: bool = False) -> None:
