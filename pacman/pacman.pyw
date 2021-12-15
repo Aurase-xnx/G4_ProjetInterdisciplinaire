@@ -687,8 +687,7 @@ class ghost():
                     # give ghost a path to a random spot (containing a pellet)
                     (randRow, randCol) = (0, 0)
 
-                    while not thisLevel.GetMapTile(randRow, randCol) == tileID['pellet'] or (randRow, randCol) == (
-                            0, 0):
+                    while not thisLevel.GetMapTile(randRow, randCol) == tileID['pellet'] or (randRow, randCol) == (0, 0):
                         randRow = random.randint(1, thisLevel.lvlHeight - 2)
                         randCol = random.randint(1, thisLevel.lvlWidth - 2)
 
@@ -878,8 +877,7 @@ class pacman():
                         # and send them to the ghost box
                         ghosts[i].x = ghosts[i].nearestCol * 16
                         ghosts[i].y = ghosts[i].nearestRow * 16
-                        ghosts[i].currentPath = path.FindPath((ghosts[i].nearestRow, ghosts[i].nearestCol), (
-                            thisLevel.GetGhostBoxPos()[0] + 1, thisLevel.GetGhostBoxPos()[1]))
+                        ghosts[i].currentPath = path.FindPath((ghosts[i].nearestRow, ghosts[i].nearestCol), (thisLevel.GetGhostBoxPos()[0] + 1, thisLevel.GetGhostBoxPos()[1]))
                         ghosts[i].FollowNextPathWay()
 
                         # set game mode to brief pause after eating
