@@ -34,3 +34,4 @@ Mode spécial
 
 Dans le menu, une option "secret" permet de jouer à un autre jeu, modifié par nos soins
 
+Basé sur ceci : https://www.youtube.com/watch?v=Q-__8Xw9KTM
