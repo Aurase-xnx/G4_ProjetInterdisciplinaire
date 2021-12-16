@@ -67,8 +67,7 @@ def play_function(font: 'pygame.font.Font', test: bool = False) -> None:
 
 
 def invader_special():
-    # Cool shit
-    pass
+    os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/Pac-Patrouille/pacpatrouille.py")
 
 
 def main_background() -> None:
@@ -83,11 +82,6 @@ def main_background() -> None:
 
 def game():
     os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/pacman/pacman.pyw")
-    with open("savegame", "rb") as f:
-
-        pygame.quit()
-        sys.exit(0)
-        pygame.display.update()
 
 
 def main(test: bool = False) -> None:
@@ -120,6 +114,8 @@ def main(test: bool = False) -> None:
         width=WINDOW_SIZE[0] * 1
     )
 
+    global user_name
+
     submenu_theme = pygame_menu.themes.THEME_DEFAULT.copy()
     # submenu_theme.widget_font_size = 15
     play_submenu = pygame_menu.Menu(
@@ -128,12 +124,13 @@ def main(test: bool = False) -> None:
         title='Mode spécial',
         width=WINDOW_SIZE[0] * 1
     )
-    play_submenu.add.button('Mode Space invader', invader_special)
+    play_submenu.add.button('Mode Pac Patrouille', invader_special)
     play_submenu.add.button('Retour', pygame_menu.events.BACK)
 
+    # user_name = play_menu.add.text_input('Name: ', default='John Doe', maxchar=10)
+    # Essai d'exporter un nom choisi vers le programme du jeu
     play_menu.add.button('Jouer !',  # When pressing return -> play(DIFFICULTY[0], font)
                          play_function,
-                         pygame_menu.events.EXIT,
                          pygame.font.Font(pygame_menu.font.FONT_FRANCHISE, 30))
     play_menu.add.button('Secrets', play_submenu)
     play_menu.add.button('Retour', pygame_menu.events.BACK)

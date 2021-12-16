@@ -1,39 +1,24 @@
-#! /usr/bin/python
-
-# pacman.pyw
-# By David Reilly
-
-# Modified by Andy Sommerville, 8 October 2007:
-# - Changed hard-coded DOS paths to os.path calls
-# - Added constant SCRIPT_PATH (so you don't need to have pacman.pyw and res in your cwd, as long
-# -   as those two are in the same directory)
-# - Changed text-file reading to accomodate any known EOLn method (\n, \r, or \r\n)
-# - I (happily) don't have a Windows box to test this. Blocks marked "WIN???"
-# -   should be examined if this doesn't run in Windows
-# - Added joystick support (configure by changing JS_* constants)
-# - Added a high-score list. Depends on wx for querying the user's name
 import pickle
 
 import pygame, sys, os, random
 from pygame.locals import *
 
-# WIN???
-SCRIPT_PATH = sys.path[0]
+sys.path.append("../launcher.py")
+# import launcher as pseudo < Ne fonctionne pas
 
-# NO_GIF_TILES -- tile numbers which do not correspond to a GIF file
-# currently only "23" for the high-score list
+SCRIPT_PATH = sys.path[0]
 NO_GIF_TILES = [23]
 
-NO_WX = 0  # if set, the high-score code will not attempt to ask the user his name
-USER_NAME = "User"  # USER_NAME=os.getlogin() # the default user name if wx fails to load or NO_WX
+NO_WX = 0  # Permet de récuperer le nom d'user avec WX
+USER_NAME = "User" # os.getlogin() peut être utilisé pour avoir le nom d'utilisateur de l'user
 
-# Joystick defaults - maybe add a Preferences dialog in the future?
+# Non testé : Support manette
 JS_DEVNUM = 0  # device 0 (pygame joysticks always start at 0). if JS_DEVNUM is not a valid device, will use 0
 JS_XAXIS = 0  # axis 0 for left/right (default for most joysticks)
 JS_YAXIS = 1  # axis 1 for up/down (default for most joysticks)
 JS_STARTBUTTON = 0  # button number to start the game. this is a matter of personal preference, and will vary from device to device
 
-# Must come before pygame.init()
+# Must come before pygame.init() < Gestion du son >
 pygame.mixer.pre_init(22050, 16, 2, 512)
 JS_STARTBUTTON = 0  # button number to start the game. this is a matter of personal preference, and will vary from device to device
 pygame.mixer.init()
@@ -42,12 +27,14 @@ clock = pygame.time.Clock()
 pygame.init()
 
 window = pygame.display.set_mode((1, 1))
-pygame.display.set_caption("Pacman")
+pygame.display.set_caption('PyMan, P pour mettre en pause')
 
 screen = pygame.display.get_surface()
 
-img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "res", "backgrounds", "1.gif")).convert()
+# Modification du fond du plateau du jeu
+img_Background = pygame.image.load(os.path.join(SCRIPT_PATH, "res", "backgrounds", "2.png")).convert()
 
+# Attribution des sons
 snd_pellet = {}
 snd_pellet[0] = pygame.mixer.Sound(os.path.join(SCRIPT_PATH, "res", "sounds", "pellet1.wav"))
 snd_pellet[1] = pygame.mixer.Sound(os.path.join(SCRIPT_PATH, "res", "sounds", "pellet2.wav"))
@@ -57,6 +44,7 @@ snd_fruitbounce = pygame.mixer.Sound(os.path.join(SCRIPT_PATH, "res", "sounds", 
 snd_eatfruit = pygame.mixer.Sound(os.path.join(SCRIPT_PATH, "res", "sounds", "eatfruit.wav"))
 snd_extralife = pygame.mixer.Sound(os.path.join(SCRIPT_PATH, "res", "sounds", "extralife.wav"))
 
+# Attribution des couleurs des fantomes
 ghostcolor = {}
 ghostcolor[0] = (170, 29, 30, 255)
 ghostcolor[1] = (255, 255, 255, 255)
@@ -66,8 +54,9 @@ ghostcolor[4] = (50, 50, 255, 255) # blue, vulnerable ghost
 ghostcolor[5] = (255, 255, 255, 255) # white, flashing ghost
 
 
-#      ___________________
-# ___/  class definitions  \_______________________________________________
+# ==================================================================
+# ================= Définitions des classes ========================
+# ==================================================================
 
 class game():
 
@@ -883,7 +872,7 @@ class pacman():
                         # set game mode to brief pause after eating
                         thisGame.SetMode(5)
 
-                    # check for collisions with fruit
+                    # Modif : quand Pacman mange le fruit, les fantomes reviennent tous dans leur box de départ
             if thisFruit.active == True:
                 if thisLevel.CheckIfHit(self.x, self.y, thisFruit.x, thisFruit.y, 8):
                     thisGame.AddToScore(2500)
@@ -892,6 +881,7 @@ class pacman():
                     thisGame.fruitScoreTimer = 120
                     thisGame.ghostValue = 200
                     for i in range(0, 4, 1):
+                        ghosts[i].state = 1 # Permet d'éviter un bug qui passait les fantomes en Ultra-instinct
                         ghosts[i].state = 3
                         ghosts[i].speed = ghosts[i].speed * 4
                         ghosts[i].x = ghosts[i].nearestCol * 16
@@ -1366,8 +1356,8 @@ class level():
 def CheckIfCloseButton(events):
     for event in events:
         if event.type == pygame.QUIT:
-            os.system("C:/Users/eserd/github/G4_PyMan/launcher.py")
-            sys.exit(0)
+            os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/launcher.py")
+            sys.exit(1)
 
 
 def pause():
@@ -1413,7 +1403,7 @@ def CheckInputs():
     if pygame.key.get_pressed()[pygame.K_ESCAPE]:
         os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/launcher.py")
         pygame.quit()
-        sys.exit(0)
+        sys.exit(1)
 
     elif thisGame.mode == 3:
         if pygame.key.get_pressed()[pygame.K_RETURN] or (js != None and js.get_button(JS_STARTBUTTON)):
@@ -1512,7 +1502,7 @@ thisLevel.LoadLevel(thisGame.GetLevelNum())
 
 window = pygame.display.set_mode(thisGame.screenSize, pygame.DOUBLEBUF | pygame.HWSURFACE)
 
-# initialise the joystick
+# initialise the joystick : non testé
 if pygame.joystick.get_count() > 0:
     if JS_DEVNUM < pygame.joystick.get_count():
         js = pygame.joystick.Joystick(JS_DEVNUM)
