@@ -1,8 +1,6 @@
 import pickle
 
 import pygame, sys, os, random
-from pygame.locals import *
-
 sys.path.append("../launcher.py")
 # import launcher as pseudo < Ne fonctionne pas
 
@@ -10,7 +8,7 @@ SCRIPT_PATH = sys.path[0]
 NO_GIF_TILES = [23]
 
 NO_WX = 0  # Permet de récuperer le nom d'user avec WX
-USER_NAME = "User" # os.getlogin() peut être utilisé pour avoir le nom d'utilisateur de l'user
+USER_NAME = os.getlogin() # os.getlogin() peut être utilisé pour avoir le nom d'utilisateur de l'user
 
 # Non testé : Support manette
 JS_DEVNUM = 0  # device 0 (pygame joysticks always start at 0). if JS_DEVNUM is not a valid device, will use 0
@@ -28,6 +26,8 @@ pygame.init()
 
 window = pygame.display.set_mode((1, 1))
 pygame.display.set_caption('PyMan, P pour mettre en pause')
+img = pygame.image.load('2pacman.png')
+pygame.display.set_icon(img)
 
 screen = pygame.display.get_surface()
 
@@ -144,7 +144,7 @@ class game():
     def __init__(self):
         self.levelNum = 0
         self.score = 0
-        self.lives = 15
+        self.lives = 3
 
         # game "mode" variable
         # 1 = normal
@@ -184,7 +184,7 @@ class game():
     def StartNewGame(self):
         self.levelNum = 1
         self.score = 0
-        self.lives = 15
+        self.lives = 3
 
         self.SetMode(4)
         thisLevel.LoadLevel(thisGame.GetLevelNum())
