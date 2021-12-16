@@ -1356,7 +1356,6 @@ class level():
 def CheckIfCloseButton(events):
     for event in events:
         if event.type == pygame.QUIT:
-            os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/launcher.py")
             sys.exit(1)
 
 
@@ -1401,7 +1400,6 @@ def CheckInputs():
             pause()
 
     if pygame.key.get_pressed()[pygame.K_ESCAPE]:
-        os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/launcher.py")
         pygame.quit()
         sys.exit(1)
 

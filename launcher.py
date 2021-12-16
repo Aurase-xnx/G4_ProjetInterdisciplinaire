@@ -19,55 +19,11 @@ main_menu: Optional['pygame_menu.Menu'] = None
 surface: Optional['pygame.Surface'] = None
 
 
-def play_function(font: 'pygame.font.Font', test: bool = False) -> None:
-    """
-    Main game function.
-    """
 
-    # Define globals
-    global main_menu
-    global clock
-
-    # Reset main menu and disable
-    # You also can set another menu, like a 'pause menu', or just use the same
-    # main_menu as the menu that will check all your input.
-    main_menu.disable()
-    main_menu.full_reset()
-
-    frame = 0
-
-    while True:
-
-        # noinspection PyUnresolvedReferences
-        clock.tick(60)
-        frame += 1
-
-        # Application events
-        events = pygame.event.get()
-        for e in events:
-            if e.type == pygame.QUIT:
-                exit()
-            elif e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_ESCAPE:
-                    main_menu.enable()
-
-                    # Quit this function, then skip to loop of main-menu on line 256
-                    return
-
-        # Pass events to main_menu
-        if main_menu.is_enabled():
-            main_menu.update(events)
-
-        # Continue playing
-        game()
-
-        # If test returns
-        if test and frame == 2:
-            break
 
 
 def invader_special():
-    os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/Pac-Patrouille/pacpatrouille.py")
+    os.system(os.path.join(os.getcwd(),"Pac-Patrouille", "pacpatrouille.py"))
 
 
 def main_background() -> None:
@@ -80,8 +36,8 @@ def main_background() -> None:
     surface.fill((128, 0, 128))
 
 
-def game():
-    os.system("C:/Users/eserd/github/G4_ProjetInterdisciplinaire/pacman/pacman.pyw")
+def pac2pac():
+    os.system(os.path.join(os.getcwd(),"pacman", "pacman.pyw"))
 
 
 def main(test: bool = False) -> None:
@@ -129,9 +85,7 @@ def main(test: bool = False) -> None:
 
     # user_name = play_menu.add.text_input('Name: ', default='John Doe', maxchar=10)
     # Essai d'exporter un nom choisi vers le programme du jeu
-    play_menu.add.button('Jouer !',  # When pressing return -> play(DIFFICULTY[0], font)
-                         play_function,
-                         pygame.font.Font(pygame_menu.font.FONT_FRANCHISE, 30))
+    play_menu.add.button('Jouer !', pac2pac)
     play_menu.add.button('Secrets', play_submenu)
     play_menu.add.button('Retour', pygame_menu.events.BACK)
 
